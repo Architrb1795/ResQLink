@@ -1,69 +1,63 @@
-# ResQLink (CrisisConnect)
+# ResQLink (Evaluation Build: Elite)
 
-> **Bridging the gap between distress and relief.**
+> **"Command, Clarity, Coordination."**
 
-ResQLink is a centralized, frontend-focused crisis response platform designed to visualize emergencies, resources, and response efforts in a single, unified interface.
+ResQLink is a next-generation crisis response operating system. It bridges the gap between distress and relief by providing a unified, role-aware "Mission Control" for agencies, volunteers, and civilians.
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://res-q-link-delta.vercel.app/)
+![ResQLink Mission Control](public/mission_control_preview.png)
 
-![ResQLink Dashboard](public/Dashboard_Screenshot.png)
+## 🌟 Elite Project Highlights
 
-## 📋 Executive Summary
+This build features the **"Elite Project"** refinements—a comprehensive UX overhaul designed for high-stakes decision making.
 
-In times of crisis, information delay costs lives. ResQLink acts as a “single source of truth” dashboard where:
+### 🛡️ Mission Control (Role-Based Access)
 
-- **Community members** can report incidents.
-- **Volunteers** can identify where help is needed.
-- **Agencies** can monitor crisis severity and resource distribution.
+A dedicated "Mission Entry" screen securely routes users to their specific operational view:
 
-This application is a **frontend-first** simulation using local state, ideal for demonstrations and evaluations without backend dependencies.
+- **Agency Command**: For strategic oversight, resource allocation, and simulation controls.
+- **Volunteer Unit**: For on-ground task management and logistics delivery.
+- **Civilian Access**: For rapid SOS reporting and status tracking.
+
+### 🧠 Operational Intelligence
+
+- **AI-Powered Insights**: The analytics dashboard uses AI callouts to highlight bottlenecks (e.g., "Medical Supply Critical in Sector 4").
+- **Predictive Logistics**: Real-time alerts forecast resource shortages before they happen.
+- **Confidence Scores**: Incident reports display AI verification levels (e.g., "98% Verified") to reduce misinformation.
+
+### �️ Advanced Tactical Map
+
+- **Drill-Down Drawers**: Interactive drawers allow commanders to inspect individual incident timelines without leaving the map.
+- **Dynamic Layers**: Toggleable overlays for "Population Density", "Flood Zones", and "Active Units".
+- **Visual Clarity**: Critical incidents pulse on the map to draw immediate attention.
 
 ## 🚀 Key Features
 
-### 🖥️ Incident Command Center
+### 🖥️ The Command Rail
 
-- **Crisis Heatmap**: Interactive map displaying incident clusters with color-coded severity.
-- **Live Metrics**: Real-time ticker showing active incidents and resource availability.
-- **Visual Status Board**: Kanban-style workflow for managing incident lifecycles.
+Replaces traditional navigation with a tactical "Command Rail" header, featuring:
 
-### 🆘 One-Tap Reporting
+- **System Heartbeat**: Visual indicator of system uptime.
+- **Sync Timer**: Real-time data synchronization status.
+- **Global Alert Ticker**: Scrolling urgency notifications.
 
-- Easy-to-use SOS reporting form.
-- Mock GPS location detection.
-- Severity triage selection (Critical, High, Medium).
+### 🆘 Smart Reporting
 
-### 📦 Resource Handling
+- **Context-Aware Guidance**: The SOS form suggests details based on the selected emergency type (e.g., "Fire" -> "Distance from structure?").
+- **Reassurance UX**: Immediate visual feedback confirms that specific nearby units have notified.
 
-- Inventory tracking for Water, Food, and Medical supplies.
-- Volunteer unit status tracking (Deployed/Standby).
+### ⚙️ Admin Simulation
 
-### 👥 Role-Based Access
-
-Toggle between three distinct views:
-
-1.  **Civilian View**: Report and view safety map.
-2.  **Volunteer View**: Respond to tasks and track progress.
-3.  **Agency View**: Full administrative dashboard and analytics.
-
-### 📊 Analytics
-
-- Data visualizations for incident trends and severity distribution.
+- **Scenario Triggers**: Admins can trigger simulated events (e.g., "Flood Surge", "Supply Collapse") to test system resilience during demos.
 
 ## 🛠️ Tech Stack
 
 - **Framework**: React.js + Vite
-- **Styling**: Tailwind CSS (Custom "Trust & Clarity" Theme)
+- **State Management**: React Context API (Role-Aware)
+- **Styling**: Tailwind CSS (Custom "Mission Dark" & "Signal" Themes)
 - **Maps**: Leaflet + React-Leaflet
-- **Icons**: Lucide React
-- **Charts**: Recharts
+- **Visuals**: Lucide React Icons + Recharts
 
 ## ⚡ Getting Started
-
-### Prerequisites
-
-- Node.js installed
-
-### Installation
 
 1.  **Clone the repository**
 
@@ -78,17 +72,17 @@ Toggle between three distinct views:
     npm install
     ```
 
-3.  **Start the development server**
+3.  **Start the Mission Control**
     ```bash
     npm run dev
     ```
 
 ## 🎨 Design Philosophy
 
-- **Simplicity over complexity**: Critical actions take minimal clicks.
-- **Visual Clarity**: Medical Blue (#0056D2) and Signal Red (#D93025) for high contrast and authority.
-- **Offline-First Concept**: UI designed to reflect real-world connectivity constraints.
+- **Cognitive Load Reduction**: Interfaces are designed to be scanned in milliseconds.
+- **Semantic Color Theory**: Strict adherence to Red (Critical), Blue (Operational), and Amber (Warning).
+- **Hierarchy first**: The most important data is always the largest and brightest element on screen.
 
 ---
 
-_ResQLink demonstrates how thoughtful frontend design can transform crisis response._
+_ResQLink Elite: Engineering order out of chaos._
