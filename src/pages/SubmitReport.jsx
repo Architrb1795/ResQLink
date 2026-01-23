@@ -2,9 +2,20 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../context/AppStateContext';
 import { INCIDENT_TYPES } from '../data/mockData';
-import { MapPin, CheckCircle, AlertOctagon, Info, ShieldCheck } from 'lucide-react';
+import { 
+    MapPin, CheckCircle, AlertOctagon, Info, ShieldCheck,
+    Droplets, Flame, HeartPulse, Package, AlertTriangle 
+} from 'lucide-react';
 import { cn } from '../lib/utils';
-import * as Icons from 'lucide-react';
+
+// Icon mapping to avoid 'import * as Icons'
+const ICON_MAP = {
+    Droplets,
+    Flame,
+    HeartPulse,
+    Package,
+    TriangleAlert: AlertTriangle // Map the data string 'TriangleAlert' to the component AlertTriangle
+};
 
 const SubmitReport = () => {
     const navigate = useNavigate();
@@ -68,7 +79,7 @@ const SubmitReport = () => {
                         </h3>
                         <div className="grid grid-cols-2 gap-3">
                             {Object.values(INCIDENT_TYPES).map((type) => {
-                                const Icon = Icons[type.icon] || Info;
+                                const Icon = ICON_MAP[type.icon] || Info;
                                 return (
                                     <button
                                         key={type.id}
@@ -142,6 +153,7 @@ const SubmitReport = () => {
                                     placeholder="Describe the situation briefly (optional)..."
                                     value={formData.description}
                                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                                    required
                                 />
                             </div>
                         </div>
