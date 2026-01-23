@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../context/AppStateContext';
-import { INCIDENT_TYPES, SEVERITY_LEVELS } from '../data/mockData';
-import { Camera, MapPin, AlertTriangle, CheckCircle } from 'lucide-react';
+import { INCIDENT_TYPES } from '../data/mockData';
+import { MapPin, CheckCircle, AlertOctagon, Info, ShieldCheck } from 'lucide-react';
 import { cn } from '../lib/utils';
 import * as Icons from 'lucide-react';
 
@@ -14,10 +14,16 @@ const SubmitReport = () => {
     
     const [formData, setFormData] = useState({
         type: '',
-        severity: 'MEDIUM',
+        severity: 'HIGH',
         description: '',
-        locationConfirmed: false,
+        locationConfirmed: true,
     });
+
+    const SEVERITY_OPTIONS = [
+        { id: 'LOW', label: 'Needs Attention', desc: 'Property damage, blocked roads, non-urgent.', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
+        { id: 'HIGH', label: 'Urgent', desc: 'Injuries, active fire, major hazard.', color: 'bg-orange-100 text-orange-800 border-orange-300' },
+        { id: 'CRITICAL', label: 'Life-Threatening', desc: 'Immediate danger to life. Needs rapid response.', color: 'bg-red-100 text-red-800 border-red-300 animate-pulse' },
+    ];
 
     const handleTypeSelect = (typeId) => {
         setFormData(prev => ({ ...prev, type: typeId }));
@@ -30,122 +36,133 @@ const SubmitReport = () => {
         
         // Simulate network delay
         setTimeout(() => {
-            const typeConfig = Object.values(INCIDENT_TYPES).find(t => t.id === formData.type);
             addIncident({
-                type: formData.type.toUpperCase(), // basic mapping
+                type: formData.type.toUpperCase(),
                 severity: formData.severity,
                 description: formData.description,
-                lat: 28.6139 + (Math.random() - 0.5) * 0.01, // Mock location near center
+                lat: 28.6139 + (Math.random() - 0.5) * 0.01,
                 lng: 77.2090 + (Math.random() - 0.5) * 0.01,
-                locationName: 'Current Location (GPS)',
+                locationName: 'Detected Location (GPS)',
                 reporterId: 'current-user',
             });
             setLoading(false);
+            // Show success animation or redirect
             navigate('/');
         }, 1500);
     };
 
     return (
-        <div className="max-w-xl mx-auto py-6">
-            <h2 className="text-2xl font-bold font-serif mb-6 text-text">Report Incident</h2>
+        <div className="max-w-xl mx-auto py-6 px-4">
+            
+            <div className="mb-6 text-center">
+                <h2 className="text-2xl font-bold font-serif text-slate-900">Emergency Report</h2>
+                <p className="text-sm text-slate-500">Step {step} of 2 • <span className="text-blue-600 font-medium">{step === 1 ? 'Identify Threat' : 'Details & Location'}</span></p>
+            </div>
 
-            <div className="bg-surface rounded-xl shadow-sm border border-border overflow-hidden">
-                {/* Progress Bar */}
-                <div className="h-1 bg-slate-100 flex">
-                    <div className={cn("h-full bg-primary transition-all duration-300", step === 1 ? "w-1/3" : step === 2 ? "w-2/3" : "w-full")}></div>
-                </div>
+            <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden relative">
+                {step === 1 && (
+                    <div className="p-6 animate-in slide-in-from-right duration-300">
+                        <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                            <AlertOctagon className="w-5 h-5 mr-2 text-red-600" />
+                            What type of emergency is it?
+                        </h3>
+                        <div className="grid grid-cols-2 gap-3">
+                            {Object.values(INCIDENT_TYPES).map((type) => {
+                                const Icon = Icons[type.icon] || Info;
+                                return (
+                                    <button
+                                        key={type.id}
+                                        onClick={() => handleTypeSelect(type.id)}
+                                        className="flex flex-col items-center justify-center p-6 border-2 border-slate-100 rounded-xl hover:bg-red-50 hover:border-red-200 hover:shadow-md transition-all gap-3 text-center h-40 group"
+                                    >
+                                        <div className={cn("p-4 rounded-full text-white transition-transform group-hover:scale-110", type.color)}>
+                                            <Icon className="w-8 h-8" />
+                                        </div>
+                                        <span className="font-bold text-slate-700 group-hover:text-red-700">{type.label}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
 
-                <div className="p-6">
-                    {step === 1 && (
-                        <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-                            <h3 className="text-lg font-semibold mb-4">What's the emergency?</h3>
-                            <div className="grid grid-cols-2 gap-3">
-                                {Object.values(INCIDENT_TYPES).map((type) => {
-                                    const Icon = Icons[type.icon] || AlertTriangle;
-                                    return (
-                                        <button
-                                            key={type.id}
-                                            onClick={() => handleTypeSelect(type.id)}
-                                            className="flex flex-col items-center justify-center p-4 border rounded-xl hover:bg-slate-50 hover:border-primary/50 transition-all gap-2 text-center h-32"
-                                        >
-                                            <div className={cn("p-3 rounded-full text-white", type.color)}>
-                                                <Icon className="w-6 h-6" />
+                {step === 2 && (
+                    <form onSubmit={handleSubmit} className="p-6 animate-in slide-in-from-right duration-300 space-y-6">
+                        
+                        {/* Selected Type Badge */}
+                        <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <span className="text-sm text-slate-500 font-medium">Selected: <strong className="text-slate-900">{INCIDENT_TYPES[formData.type]?.label}</strong></span>
+                            <button type="button" onClick={() => setStep(1)} className="text-xs text-blue-600 font-bold hover:underline">CHANGE</button>
+                        </div>
+
+                        {/* Severity Selector */}
+                        <div>
+                            <label className="block text-sm font-bold text-slate-700 mb-3">How severe is it?</label>
+                            <div className="space-y-3">
+                                {SEVERITY_OPTIONS.map((level) => (
+                                    <div 
+                                        key={level.id}
+                                        onClick={() => setFormData(prev => ({ ...prev, severity: level.id }))}
+                                        className={cn(
+                                            "cursor-pointer p-3 rounded-lg border-2 flex items-center transition-all",
+                                            formData.severity === level.id 
+                                                ? `border-slate-800 bg-slate-50 ring-1 ring-slate-800` 
+                                                : "border-slate-100 hover:border-slate-300"
+                                        )}
+                                    >
+                                        <div className={cn("w-4 h-4 rounded-full border-2 mr-3 flex items-center justify-center shrink-0", 
+                                            formData.severity === level.id ? "border-slate-900" : "border-slate-300"
+                                        )}>
+                                            {formData.severity === level.id && <div className="w-2 h-2 rounded-full bg-slate-900"></div>}
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center justify-between">
+                                                <span className="font-bold text-sm text-slate-900">{level.label}</span>
+                                                <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded", level.color)}>
+                                                    {level.id}
+                                                </span>
                                             </div>
-                                            <span className="font-medium text-sm text-text">{type.label}</span>
-                                        </button>
-                                    );
-                                })}
+                                            <p className="text-xs text-slate-500 mt-0.5">{level.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    )}
 
-                    {step === 2 && (
-                        <form onSubmit={handleSubmit} className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                           
+                        {/* Location & Details */}
+                        <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-text-muted mb-2">Severity Assessment</label>
-                                <div className="grid grid-cols-4 gap-2">
-                                    {Object.values(SEVERITY_LEVELS).map((level) => (
-                                        <button
-                                            key={level.id}
-                                            type="button"
-                                            onClick={() => setFormData(prev => ({ ...prev, severity: level.id.toUpperCase() }))}
-                                            className={cn(
-                                                "py-2 px-1 rounded-lg text-xs font-bold border transition-all",
-                                                formData.severity === level.id.toUpperCase()
-                                                    ? `${level.bg} ${level.color} ring-2 ring-offset-1 ring-${level.color.split('-')[1]}-400`
-                                                    : "bg-slate-50 text-slate-500 border-slate-200"
-                                            )}
-                                        >
-                                            {level.label}
-                                        </button>
-                                    ))}
+                                <label className="block text-sm font-bold text-slate-700 mb-2">Location & Details</label>
+                                <div className="flex items-center gap-3 bg-blue-50 p-3 rounded-lg text-blue-800 text-sm mb-3 border border-blue-100">
+                                    <MapPin className="w-4 h-4 shrink-0" />
+                                    <span>GPS Location Detected: <strong>Connaught Place, Sector 4</strong></span>
                                 </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-text-muted mb-2">Details</label>
                                 <textarea
-                                    className="w-full p-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 outline-none min-h-[100px]"
-                                    placeholder="Describe the situation..."
+                                    className="w-full p-4 border-2 border-slate-200 rounded-lg focus:border-blue-500 focus:ring-0 outline-none min-h-[100px] text-sm font-medium resize-none"
+                                    placeholder="Describe the situation briefly (optional)..."
                                     value={formData.description}
                                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                                    required
                                 />
                             </div>
+                        </div>
 
-                            <div className="bg-slate-50 p-4 rounded-lg flex items-center justify-between border border-border">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-blue-100 text-blue-600 rounded-full">
-                                        <MapPin className="w-5 h-5" />
-                                    </div>
-                                    <div className="text-sm">
-                                        <div className="font-semibold text-text">Location Detected</div>
-                                        <div className="text-text-muted text-xs">Lat: 28.6139, Long: 77.2090</div>
-                                    </div>
-                                </div>
-                                <CheckCircle className="w-5 h-5 text-green-500" />
+                        {/* Actions */}
+                        <div className="pt-2">
+                             <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-4 px-6 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-700 active:scale-[0.98] transition-all shadow-xl shadow-red-200 disabled:opacity-70 disabled:scale-100"
+                            >
+                                {loading ? 'Transmitting Alert...' : 'SEND EMERGENCY REPORT'}
+                            </button>
+                            <div className="mt-4 flex items-center justify-center text-xs text-slate-400 gap-1.5">
+                                <ShieldCheck className="w-3 h-3" />
+                                <span>Report will be immediately visible to nearby response units.</span>
                             </div>
+                        </div>
 
-                            <div className="flex gap-3 pt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setStep(1)}
-                                    className="flex-1 py-3 px-4 rounded-lg border border-border text-text font-medium hover:bg-slate-50"
-                                >
-                                    Back
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="flex-2 w-full py-3 px-4 rounded-lg bg-critical text-white font-bold hover:bg-red-700 transition-colors shadow-lg shadow-red-200 disabled:opacity-70 flex items-center justify-center gap-2"
-                                >
-                                    {loading ? 'Sending SOS...' : 'SEND SOS ALERT'}
-                                </button>
-                            </div>
-                        </form>
-                    )}
-                </div>
+                    </form>
+                )}
             </div>
         </div>
     );
