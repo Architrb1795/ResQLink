@@ -4,6 +4,8 @@
 
 ResQLink is a centralized, frontend-focused crisis response platform designed to visualize emergencies, resources, and response efforts in a single, unified interface.
 
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://res-q-link-delta.vercel.app/)
+
 ![ResQLink Dashboard](public/Dashboard_Screenshot.png)
 
 ## 📋 Executive Summary
