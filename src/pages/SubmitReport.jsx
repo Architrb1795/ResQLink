@@ -21,7 +21,8 @@ const SubmitReport = () => {
     const navigate = useNavigate();
     const { addIncident } = useAppState();
     const [step, setStep] = useState(1);
-    const [loading, setLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [success, setSuccess] = useState(false); // New Success State
     
     const [formData, setFormData] = useState({
         type: '',
@@ -36,6 +37,15 @@ const SubmitReport = () => {
         { id: 'CRITICAL', label: 'Life-Threatening', desc: 'Immediate danger to life. Needs rapid response.', color: 'bg-red-100 text-red-800 border-red-300 animate-pulse' },
     ];
 
+    // Smart Guidance Mapping
+    const GUIDANCE_TIPS = {
+        medical: "For mass casualties, please indicate the approximate number of injured in details.",
+        fire: "Ensure you are at a safe distance before reporting. Do not enter burning structures.",
+        flood: "If water level is rising rapidly, mark severity as CRITICAL immediately.",
+        supply: "Specify if water or food is the primary need.",
+        infrastructure: "Stay clear of damaged bridges or power lines."
+    };
+
     const handleTypeSelect = (typeId) => {
         setFormData(prev => ({ ...prev, type: typeId }));
         setStep(2);
@@ -43,12 +53,12 @@ const SubmitReport = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setSubmitting(true);
         
         // Simulate network delay
         setTimeout(() => {
             addIncident({
-                type: formData.type.toUpperCase(),
+                type: formData.type.toUpperCase(), // Using ID as type for now
                 severity: formData.severity,
                 description: formData.description,
                 lat: 28.6139 + (Math.random() - 0.5) * 0.01,
@@ -56,11 +66,41 @@ const SubmitReport = () => {
                 locationName: 'Detected Location (GPS)',
                 reporterId: 'current-user',
             });
-            setLoading(false);
-            // Show success animation or redirect
-            navigate('/');
+            setSubmitting(false);
+            setSuccess(true); // Show success screen instead of immediate redirect
         }, 1500);
     };
+
+    if (success) {
+        return (
+            <div className="max-w-md mx-auto py-12 px-6 text-center animate-in zoom-in-95 duration-500">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-green-200 shadow-lg">
+                    <CheckCircle className="w-10 h-10 text-green-600" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Help is on the way.</h2>
+                <p className="text-slate-500 mb-8 leading-relaxed">
+                    Your report has been received by <strong className="text-slate-800">Unit Alpha-1</strong> and nearest response teams in <strong>Sector 4</strong>.
+                </p>
+                <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-8 text-left">
+                    <h4 className="font-bold text-blue-800 text-sm mb-1 flex items-center">
+                        <ShieldCheck className="w-4 h-4 mr-2" />
+                        Next Steps
+                    </h4>
+                    <ul className="text-xs text-blue-700 space-y-2 list-disc pl-4">
+                        <li>Stay near your location if safe.</li>
+                        <li>Keep your phone line open for verification.</li>
+                        <li>Update the report if the situation changes.</li>
+                    </ul>
+                </div>
+                <button 
+                    onClick={() => navigate('/dashboard')}
+                    className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg"
+                >
+                    Return to Mission Control
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-xl mx-auto py-6 px-4">
@@ -104,6 +144,11 @@ const SubmitReport = () => {
                         <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg border border-slate-200">
                             <span className="text-sm text-slate-500 font-medium">Selected: <strong className="text-slate-900">{INCIDENT_TYPES[formData.type]?.label}</strong></span>
                             <button type="button" onClick={() => setStep(1)} className="text-xs text-blue-600 font-bold hover:underline">CHANGE</button>
+                        </div>
+
+                        {/* Smart Guidance Tip */}
+                        <div className="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r text-xs text-blue-800 leading-relaxed font-medium">
+                            <strong>Tip:</strong> {GUIDANCE_TIPS[formData.type] || "Provide as much detail as possible for faster response."}
                         </div>
 
                         {/* Severity Selector */}
@@ -162,10 +207,10 @@ const SubmitReport = () => {
                         <div className="pt-2">
                              <button
                                 type="submit"
-                                disabled={loading}
+                                disabled={submitting}
                                 className="w-full py-4 px-6 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-700 active:scale-[0.98] transition-all shadow-xl shadow-red-200 disabled:opacity-70 disabled:scale-100"
                             >
-                                {loading ? 'Transmitting Alert...' : 'SEND EMERGENCY REPORT'}
+                                {submitting ? 'Transmitting Alert...' : 'SEND EMERGENCY REPORT'}
                             </button>
                             <div className="mt-4 flex items-center justify-center text-xs text-slate-400 gap-1.5">
                                 <ShieldCheck className="w-3 h-3" />

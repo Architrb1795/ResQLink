@@ -9,8 +9,17 @@ export const AppProvider = ({ children }) => {
   const [resources, setResources] = useState(INITIAL_RESOURCES);
   const [volunteers, setVolunteers] = useState(INITIAL_VOLUNTEERS);
   
-  // User Role State: 'CIVILIAN', 'VOLUNTEER', 'AGENCY'
-  const [userRole, setUserRole] = useState('AGENCY'); 
+  // User State
+  const [currentUser, setCurrentUser] = useState(null); // { role, name, id, ... }
+  const userRole = currentUser?.role || 'GUEST';
+
+  const login = (role, userData) => {
+    setCurrentUser({ role, ...userData });
+  };
+
+  const logout = () => {
+    setCurrentUser(null);
+  }; 
 
   // Actions
   const addIncident = (incident) => {
@@ -55,12 +64,15 @@ export const AppProvider = ({ children }) => {
     resources,
     volunteers,
     userRole,
-    setUserRole,
+
     addIncident,
     updateIncidentStatus,
     deleteIncident,
     verifyIncident,
     stats,
+    currentUser,
+    login,
+    logout,
   };
 
   return (

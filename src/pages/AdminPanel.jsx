@@ -75,16 +75,30 @@ const AdminPanel = () => {
                         </div>
                     </div>
 
-                    {/* Data Management */}
+                    {/* Data Management & Simulation */}
                     <div className="bg-white p-6 rounded border border-slate-200 shadow-sm">
                          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center">
                             <Power className="w-4 h-4 mr-2" />
-                            Simulation Controls
+                            Simulation Protocols
                         </h3>
-                        <div className="flex gap-4">
-                            <button className="flex-1 py-2 border border-slate-200 rounded text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-center">
+                        <div className="space-y-3">
+                            <div className="p-3 bg-red-50 border border-red-100 rounded flex justify-between items-center group cursor-pointer hover:bg-red-100 transition-colors">
+                                <div>
+                                    <h4 className="font-bold text-red-700 text-sm">Scenario: Major Flood Surge</h4>
+                                    <p className="text-xs text-red-500">Triggers widespread critical alerts in low-lying sectors.</p>
+                                </div>
+                                <button className="px-3 py-1 bg-red-200 text-red-700 text-xs font-bold rounded uppercase group-hover:bg-red-300">Run Sim</button>
+                            </div>
+                            <div className="p-3 bg-orange-50 border border-orange-100 rounded flex justify-between items-center group cursor-pointer hover:bg-orange-100 transition-colors">
+                                <div>
+                                    <h4 className="font-bold text-orange-700 text-sm">Scenario: Supply Chain Collapse</h4>
+                                    <p className="text-xs text-orange-500">Simulates 80% drop in medical resources.</p>
+                                </div>
+                                <button className="px-3 py-1 bg-orange-200 text-orange-700 text-xs font-bold rounded uppercase group-hover:bg-orange-300">Run Sim</button>
+                            </div>
+                            <button className="w-full py-2 border border-slate-200 rounded text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center justify-center mt-2">
                                 <RefreshCw className="w-4 h-4 mr-2" />
-                                Reset Demo Data
+                                Reset to Baseline State
                             </button>
                         </div>
                     </div>

@@ -61,20 +61,36 @@ const DashboardHome = () => {
                     </div>
                 </div>
 
-                {/* 3. LIVE OPERATIONS FEED */}
+                {/* 3. LIVE OPERATIONS FEED (Priority Stack) */}
                 <div className="space-y-2">
-                    <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center">
-                        <Radio className="w-4 h-4 mr-2" />
-                        Live Operations Feed
-                    </h3>
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center">
+                            <Radio className="w-4 h-4 mr-2" />
+                            Live Operations Feed
+                        </h3>
+                        <span className="text-[10px] font-mono text-slate-400">PRIORITY SORT ACTIVE</span>
+                    </div>
                     <div className="bg-white rounded border border-slate-200 shadow-sm overflow-hidden h-[450px] overflow-y-auto relative">
                         <div className="absolute top-0 left-0 right-0 h-1 bg-blue-600/10 z-10">
                             <div className="h-full bg-blue-600 w-1/3 animate-[shimmer_2s_infinite]"></div>
                         </div>
                         
                         <div className="divide-y divide-slate-100">
-                             {incidents.slice(0, 8).map(inc => (
-                                 <div key={inc.id} className="p-4 hover:bg-slate-50 transition-colors group cursor-pointer border-l-2 border-transparent hover:border-blue-500">
+                             {incidents
+                                .sort((a, b) => {
+                                    const priority = { CRITICAL: 3, HIGH: 2, MEDIUM: 1, LOW: 0 };
+                                    return priority[b.severity] - priority[a.severity];
+                                })
+                                .slice(0, 8)
+                                .map(inc => (
+                                 <div key={inc.id} className="p-4 hover:bg-slate-50 transition-colors group cursor-pointer border-l-2 border-transparent hover:border-blue-500 relative">
+                                     {/* Pin Icon for Critical */}
+                                     {inc.severity === 'CRITICAL' && (
+                                         <div className="absolute top-2 right-2 rotate-45 text-slate-300">
+                                            <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                                         </div>
+                                     )}
+
                                      <div className="flex justify-between items-start mb-1">
                                          <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
                                              inc.severity === 'CRITICAL' ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-600'
@@ -89,6 +105,18 @@ const DashboardHome = () => {
                                      <h4 className="text-sm font-bold text-slate-700 mb-1 group-hover:text-blue-600 transition-colors">
                                         {inc.description.length > 50 ? inc.description.substring(0,50) + '...' : inc.description} 
                                      </h4>
+                                     
+                                     {/* Confidence Score Bar */}
+                                     <div className="mt-2 flex items-center gap-2">
+                                         <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                             <div 
+                                                className="h-full bg-blue-500/50 rounded-full" 
+                                                style={{ width: `${Math.floor(Math.random() * (98 - 80) + 80)}%` }} // Mock confidence > 80%
+                                             ></div>
+                                         </div>
+                                         <span className="text-[9px] font-bold text-slate-400">VERIFIED</span>
+                                     </div>
+
                                      <div className="flex items-center justify-between mt-2">
                                         <div className="text-xs text-slate-500 font-mono">{inc.locationName}</div>
                                         <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-blue-500 -translate-x-2 group-hover:translate-x-0 transition-transform" />
