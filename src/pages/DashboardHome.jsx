@@ -38,7 +38,7 @@ const DashboardHome = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content Area (Map Placeholder) */}
-                <div className="lg:col-span-2 bg-surface rounded-lg border border-border shadow-sm h-[400px] relative overflow-hidden">
+                <div className="lg:col-span-2 bg-surface rounded-lg border border-border shadow-sm h-[300px] md:h-[400px] relative overflow-hidden">
                     <MapWidget />
                 </div>
 

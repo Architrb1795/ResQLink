@@ -6,9 +6,9 @@ const MetricsTicker = () => {
     const { stats } = useAppState();
     
     return (
-        <div className="bg-text text-white text-xs py-2 px-4 flex items-center overflow-hidden whitespace-nowrap">
-            <span className="font-bold text-red-400 mr-2">LIVE UPDATES:</span>
-            <div className="flex space-x-8 animate-pulse-fast">
+        <div className="bg-text text-white text-xs py-2 px-4 flex items-center overflow-x-auto no-scrollbar whitespace-nowrap">
+            <span className="font-bold text-red-400 mr-2 sticky left-0 bg-text z-10 pr-2">LIVE UPDATES:</span>
+            <div className="flex space-x-8 animate-pulse-fast pr-4">
                 <span>Active Incidents: <strong className="text-white">{stats.active}</strong></span>
                 <span>Critical: <strong className="text-red-400">{stats.critical}</strong></span>
                 <span>Resources Available: <strong className="text-green-400">{stats.resourcesAvailable}</strong></span>
