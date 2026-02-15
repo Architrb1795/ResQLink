@@ -1,0 +1,204 @@
+// ─── Prisma Schema ─────────────────────────────────────────────
+// ResQLink data model for Neon Postgres.
+// Matches the existing frontend mock data structure so the
+// frontend can switch to API calls with minimal changes.
+// ────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────
+
+enum Role {
+  AGENCY
+  VOLUNTEER
+  CIVILIAN
+  ADMIN
+}
+
+enum IncidentType {
+  FLOOD
+  FIRE
+  MEDICAL
+  SUPPLY
+  INFRASTRUCTURE
+}
+
+enum Severity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum IncidentStatus {
+  REPORTED
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum ResourceStatus {
+  AVAILABLE
+  LIMITED
+  DEPLETED
+}
+
+enum VolunteerStatus {
+  AVAILABLE
+  DEPLOYED
+  OFFLINE
+}
+
+enum AssignmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum BroadcastPriority {
+  CRITICAL
+  HIGH
+  NORMAL
+  LOW
+}
+
+// ─── Models ───────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role
+  phone        String?  @unique
+  fcmToken     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  incidents     Incident[]
+  auditLogs     AuditLog[]
+  refreshTokens RefreshToken[]
+  assignments   Assignment[]   @relation("AssignedBy")
+  uploads       MediaUpload[]
+  broadcasts    Broadcast[]
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([userId])
+}
+
+model Incident {
+  id           String         @id @default(cuid())
+  type         IncidentType
+  severity     Severity
+  status       IncidentStatus @default(REPORTED)
+  lat          Float
+  lng          Float
+  locationName String
+  description  String
+  verified     Boolean        @default(false)
+  votes        Int            @default(0)
+  weather      Json?
+  aiConfidence Float?
+  aiKeywords   String[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  // Relations
+  reporterId   String
+  reporter     User           @relation(fields: [reporterId], references: [id])
+  assignments  Assignment[]
+  media        MediaUpload[]
+}
+
+model Resource {
+  id       String         @id @default(cuid())
+  type     String
+  quantity Int
+  unit     String
+  lat      Float
+  lng      Float
+  status   ResourceStatus @default(AVAILABLE)
+}
+
+model Volunteer {
+  id            String          @id @default(cuid())
+  name          String
+  status        VolunteerStatus @default(AVAILABLE)
+  lat           Float
+  lng           Float
+  currentTaskId String?
+  assignments   Assignment[]
+}
+
+model Assignment {
+  id           String           @id @default(cuid())
+  volunteerId  String
+  volunteer    Volunteer        @relation(fields: [volunteerId], references: [id])
+  incidentId   String
+  incident     Incident         @relation(fields: [incidentId], references: [id])
+  assignedById String
+  assignedBy   User             @relation("AssignedBy", fields: [assignedById], references: [id])
+  status       AssignmentStatus @default(ACTIVE)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([volunteerId])
+  @@index([incidentId])
+}
+
+model MediaUpload {
+  id         String   @id @default(cuid())
+  incidentId String
+  incident   Incident @relation(fields: [incidentId], references: [id])
+  uploaderId String
+  uploader   User     @relation(fields: [uploaderId], references: [id])
+  url        String
+  mimeType   String
+  sizeBytes  Int
+  createdAt  DateTime @default(now())
+
+  @@index([incidentId])
+}
+
+model Broadcast {
+  id        String            @id @default(cuid())
+  senderId  String
+  sender    User              @relation(fields: [senderId], references: [id])
+  channel   String
+  message   String
+  priority  BroadcastPriority @default(NORMAL)
+  createdAt DateTime          @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  timestamp  DateTime @default(now())
+
+  // Relations
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([entityType, entityId])
+}
