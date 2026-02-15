@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import MapWidget from '../components/dashboard/MapWidget';
+import { useAppState } from '../context/AppStateContext';
 import { Filter, Layers, ChevronLeft, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const CrisisMap = () => {
+    const { isConnected, incidents } = useAppState();
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [selectedIncident, setSelectedIncident] = useState(null); // For drill-down
     const [filters, setFilters] = useState({
@@ -125,7 +127,9 @@ const CrisisMap = () => {
                 
                 {/* Overlay Status */}
                 <div className="absolute top-4 right-4 z-[400] bg-slate-900/80 backdrop-blur text-white px-3 py-1 rounded text-xs font-mono border border-slate-700">
-                    <span className="text-green-400">●</span> SYSTEM ONLINE
+                    {isConnected
+                        ? <><span className="text-green-400">●</span> LIVE — {incidents.length} SIGNALS</>
+                        : <><span className="text-amber-400">●</span> DEMO MODE</>}
                 </div>
             </div>
 

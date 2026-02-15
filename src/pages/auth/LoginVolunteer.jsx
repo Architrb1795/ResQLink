@@ -1,27 +1,57 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../../context/AppStateContext';
-import { HeartHandshake, Truck, MapPin, ArrowRight, Loader2 } from 'lucide-react';
+import { HeartHandshake, Truck, MapPin, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 
 const LoginVolunteer = () => {
     const navigate = useNavigate();
-    const { login } = useAppState();
+    const { login, isConnected } = useAppState();
     const [loading, setLoading] = useState(false);
-    
-    const handleLogin = (e) => {
+    const [error, setError] = useState('');
+
+    const [formData, setFormData] = useState({
+        name: '',
+        phone: '',
+        email: '',
+        password: '',
+    });
+
+    const handleChange = (e) => {
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+        if (error) setError('');
+    };
+
+    const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setTimeout(() => {
-            login('VOLUNTEER', { name: 'Vol. Rahul Verma', id: 'VOL-404', role: 'VOLUNTEER' });
-            setLoading(false);
+        setError('');
+
+        try {
+            if (isConnected) {
+                await login('VOLUNTEER', null, {
+                    email: formData.email,
+                    password: formData.password,
+                });
+            } else {
+                await new Promise(r => setTimeout(r, 800));
+                await login('VOLUNTEER', {
+                    name: formData.name || 'Vol. Rahul Verma',
+                    id: 'VOL-404',
+                    role: 'VOLUNTEER',
+                });
+            }
             navigate('/dashboard');
-        }, 1200);
+        } catch (err) {
+            setError(err.message || 'Login failed. Please check your credentials.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="min-h-screen bg-emerald-50 flex items-center justify-center p-4">
             <div className="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
-                
+
                 {/* Visual Context Panel (Left) */}
                 <div className="hidden md:flex md:w-5/12 bg-emerald-600 p-8 flex-col justify-between text-white relative overflow-hidden">
                     <div className="relative z-10">
@@ -30,8 +60,11 @@ const LoginVolunteer = () => {
                         </div>
                         <h2 className="text-3xl font-bold mb-2">Join the Response</h2>
                         <p className="text-emerald-100 opacity-90">Your help makes a difference. Connect now to see nearby relief tasks.</p>
+                        {!isConnected && (
+                            <p className="text-emerald-200 text-xs mt-3 font-medium bg-emerald-700/50 px-3 py-1.5 rounded-lg inline-block">⚡ Demo Mode</p>
+                        )}
                     </div>
-                    
+
                     <div className="space-y-4 relative z-10">
                         <div className="flex items-center gap-3 bg-white/10 p-3 rounded-lg backdrop-blur-sm">
                             <MapPin className="w-5 h-5 text-emerald-200" />
@@ -61,11 +94,22 @@ const LoginVolunteer = () => {
                         <p className="text-slate-500">Enter your registered details to assist.</p>
                     </div>
 
+                    {/* Error Banner */}
+                    {error && (
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 animate-in slide-in-from-top duration-200">
+                            <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+                            <p className="text-sm text-red-700">{error}</p>
+                        </div>
+                    )}
+
                     <form onSubmit={handleLogin} className="space-y-5">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">Full Name / ID</label>
-                            <input 
+                            <input
                                 type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
                                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 transition-all"
                                 placeholder="e.g. Rahul Verma"
                                 required
@@ -73,19 +117,37 @@ const LoginVolunteer = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Mobile Number</label>
-                            <input 
-                                type="tel"
+                            <label className="block text-sm font-medium text-slate-700 mb-1">{isConnected ? 'Email' : 'Mobile Number'}</label>
+                            <input
+                                type={isConnected ? 'email' : 'tel'}
+                                name={isConnected ? 'email' : 'phone'}
+                                value={isConnected ? formData.email : formData.phone}
+                                onChange={handleChange}
                                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 transition-all font-mono"
-                                placeholder="+91 98765 43210"
+                                placeholder={isConnected ? 'volunteer@email.com' : '+91 98765 43210'}
                                 required
                             />
                         </div>
-                        
+
+                        {isConnected && (
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 transition-all"
+                                    placeholder="••••••••••••"
+                                    required
+                                />
+                            </div>
+                        )}
+
                         <div className="border-t border-slate-100 pt-2"></div>
 
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             disabled={loading}
                             className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all flex items-center justify-center shadow-lg shadow-emerald-200 disabled:opacity-70"
                         >

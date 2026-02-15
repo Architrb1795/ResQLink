@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AppProvider, useAppState } from './context/AppStateContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/layout/Layout';
 import DashboardHome from './pages/DashboardHome';
 import CrisisMap from './pages/CrisisMap';
@@ -25,32 +26,34 @@ const ProtectedRoute = () => {
 
 function App() {
   return (
-    <AppProvider>
-      <Router>
-        <Routes>
-          {/* Public Auth Routes */}
-          <Route path="/" element={<LoginSelection />} />
-          <Route path="/login/agency" element={<LoginAgency />} />
-          <Route path="/login/volunteer" element={<LoginVolunteer />} />
-          <Route path="/login/civilian" element={<LoginCivilian />} />
+    <ErrorBoundary>
+      <AppProvider>
+        <Router>
+          <Routes>
+            {/* Public Auth Routes */}
+            <Route path="/" element={<LoginSelection />} />
+            <Route path="/login/agency" element={<LoginAgency />} />
+            <Route path="/login/volunteer" element={<LoginVolunteer />} />
+            <Route path="/login/civilian" element={<LoginCivilian />} />
 
-          {/* Protected App Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<Layout />}>
-              <Route path="/dashboard" element={<DashboardHome />} />
-              <Route path="/map" element={<CrisisMap />} />
-              <Route path="/report" element={<SubmitReport />} />
-              <Route path="/resources" element={<Resources />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/admin" element={<AdminPanel />} />
+            {/* Protected App Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<Layout />}>
+                <Route path="/dashboard" element={<DashboardHome />} />
+                <Route path="/map" element={<CrisisMap />} />
+                <Route path="/report" element={<SubmitReport />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/admin" element={<AdminPanel />} />
+              </Route>
             </Route>
-          </Route>
 
-          {/* Catch all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
-    </AppProvider>
+            {/* Catch all */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Router>
+      </AppProvider>
+    </ErrorBoundary>
   );
 }
 
