@@ -1,5 +1,10 @@
 # Logs
 logs
+
+# Environment
+.env
+.env.local
+.env.production
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -120,3 +125,9 @@ dist
 dist
 dist-ssr
 *.local
+
+# Backend
+backend/dist/
+backend/node_modules/
+backend/.env
+.env.local

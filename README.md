@@ -66,14 +66,38 @@ Replaces traditional navigation with a tactical "Command Rail" header, featuring
     cd resqlink
     ```
 
-2.  **Install dependencies**
+### Backend
+
+1.  **Navigate to backend**
+
+    ```bash
+    cd backend
+    ```
+
+2.  **Install & Setup**
 
     ```bash
     npm install
+    # Create .env from .env.example
+    npx prisma generate
     ```
 
-3.  **Start the Mission Control**
+3.  **Start Server**
     ```bash
+    npm run dev
+    ```
+
+### Frontend
+
+1.  **Navigate to root**
+
+    ```bash
+    cd ..
+    ```
+
+2.  **Install & Start**
+    ```bash
+    npm install
     npm run dev
     ```
 
