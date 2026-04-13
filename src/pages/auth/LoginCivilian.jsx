@@ -11,7 +11,7 @@ const LoginCivilian = () => {
     const [otp, setOtp] = useState('');
     const [otpSent, setOtpSent] = useState(false);
     const [error, setError] = useState('');
-    const [serverUrl, setServerUrl] = useState('http://localhost:3001');
+    const [serverUrl, setServerUrl] = useState('https://resqapp-2.onrender.com');
 
     const formatPhone = (input) => {
         const digits = input.replace(/\D/g, '');

@@ -156,7 +156,7 @@ const SubmitReport = () => {
         setStep(2);
     };
 
-    const [serverUrl] = useState('http://localhost:3001');
+    const [serverUrl] = useState('https://resqapp-2.onrender.com');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
