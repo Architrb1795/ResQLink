@@ -15,8 +15,19 @@ const pool = process.env.DATABASE_URL
   : null;
 
 let client = null;
-if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
-  client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const twilioSid = process.env.TWILIO_ACCOUNT_SID;
+const twilioToken = process.env.TWILIO_AUTH_TOKEN;
+const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
+
+if (twilioSid && twilioToken && twilioSid.startsWith('AC') && twilioToken.length > 20) {
+  try {
+    client = twilio(twilioSid, twilioToken);
+    console.log('Twilio initialized successfully');
+  } catch (err) {
+    console.log('Twilio not available:', err.message);
+  }
+} else {
+  console.log('Twilio not configured - running in demo mode');
 }
 
 const ADMIN_PHONE = process.env.ADMIN_PHONE || '+919999999999';
@@ -102,14 +113,14 @@ async function initDatabase() {
 }
 
 async function sendSMS(message, toPhone) {
-  if (!client) {
-    console.log('Twilio not configured, skipping SMS. Message:', message);
-    return null;
+  if (!client || !twilioPhone) {
+    console.log(`[DEMO] SMS to ${toPhone}:`, message);
+    return 'demo-sid';
   }
   try {
     const result = await client.messages.create({
       body: message,
-      from: process.env.TWILIO_PHONE_NUMBER,
+      from: twilioPhone,
       to: toPhone
     });
     console.log('SMS sent:', result.sid);
@@ -300,9 +311,10 @@ app.post('/api/auth/send-otp', async (req, res) => {
     
     const message = `Your ResQLink verification code is: ${otp}. Valid for 5 minutes.`;
     
+    console.log(`\n========== OTP for ${phone}: ${otp} ==========`);
+    
     if (!client) {
-      console.log(`\n============ OTP for ${phone}: ${otp} ============`);
-      return res.json({ success: true, message: 'OTP sent (check server console)', otp });
+      return res.json({ success: true, message: 'OTP sent (demo mode)', otp });
     }
     
     await sendSMS(message, phone);
