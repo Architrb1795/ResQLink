@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bell, User, Menu } from 'lucide-react';
 import { useAppState } from '../../context/AppStateContext';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const CommandRail = ({ onMenuClick }) => {
   const { currentUser, logout, stats } = useAppState();
@@ -62,6 +63,7 @@ const CommandRail = ({ onMenuClick }) => {
 
             {/* Right: User Context & Controls */}
             <div className="flex items-center space-x-3">
+                <LanguageSwitcher />
                 
                 {currentUser && (
                     <div className="hidden sm:flex flex-col items-end mr-2">

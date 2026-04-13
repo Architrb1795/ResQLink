@@ -1,0 +1,95 @@
+{
+  "app": {
+    "name": "ResQLink",
+    "tagline": "Emergency Response System"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "report": "Report",
+    "map": "Map",
+    "resources": "Resources",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "login": {
+    "title": "ResQLink Public Access",
+    "subtitle": "We are here to help. Sign in to report incidents or track status.",
+    "phoneLabel": "Mobile Number",
+    "phonePlaceholder": "+91 98765 43210",
+    "getOtp": "Get OTP Code",
+    "enterOtp": "Enter OTP",
+    "otpPlaceholder": "------",
+    "verify": "Verify & Login",
+    "reportWithoutLogin": "Report Without Signing In",
+    "emergencyNote": "In a life-threatening emergency, always call 112 or your local emergency number first.",
+    "changeNumber": "Change number",
+    "serverUrl": "Server URL (for development)"
+  },
+  "report": {
+    "title": "Emergency Report",
+    "step": "Step",
+    "of": "of",
+    "selectThreat": "Identify Threat",
+    "details": "Details & Location",
+    "whatType": "What type of emergency is it?",
+    "howSevere": "How severe is it?",
+    "locationDetails": "Location & Details",
+    "locationDetected": "GPS Location Detected",
+    "descriptionPlaceholder": "Describe the situation briefly (optional)...",
+    "submit": "SEND EMERGENCY REPORT",
+    "submitting": "Transmitting Alert...",
+    "tip": "Tip",
+    "nextSteps": "What to do next",
+    "stayLocation": "Stay near your location if it is safe to do so",
+    "keepLine": "Keep your phone line open for verification calls",
+    "updateReport": "Update the report if the situation changes",
+    "submitted": "Report Submitted!",
+    "received": "Your emergency report has been received by",
+    "statusBadges": ["✓ Received", "📡 Transmitted", "🚑 Units Alerted"],
+    "submitAnother": "Submit Another",
+    "goDashboard": "Dashboard"
+  },
+  "severity": {
+    "LOW": "Needs Attention",
+    "HIGH": "Urgent",
+    "CRITICAL": "Life-Threatening"
+  },
+  "incidentTypes": {
+    "medical": "Medical Emergency",
+    "fire": "Fire Hazard",
+    "flood": "Flood/Water",
+    "supply": "Supply Need",
+    "infrastructure": "Infrastructure"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "activeIncidents": "Active Incidents",
+    "critical": "Critical",
+    "resolved": "Resolved",
+    "resources": "Resources Available",
+    "recentReports": "Recent Reports",
+    "responseUnits": "Active Response Units",
+    "noIncidents": "No incidents reported yet"
+  },
+  "map": {
+    "title": "Crisis Map",
+    "filter": "Filter",
+    "all": "All Types"
+  },
+  "resources": {
+    "title": "Resources",
+    "available": "Available",
+    "inUse": "In Use",
+    "addResource": "Add Resource"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  }
+}

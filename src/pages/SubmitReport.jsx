@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../context/AppStateContext';
+import { useLanguage } from '../context/LanguageContext';
 import { INCIDENT_TYPES } from '../data/mockData';
 import { 
     MapPin, CheckCircle, AlertOctagon, Info, ShieldCheck,
