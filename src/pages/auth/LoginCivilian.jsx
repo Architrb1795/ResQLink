@@ -77,7 +77,7 @@ const LoginCivilian = () => {
                 });
                 navigate('/report');
             } else {
-                if (otp === '123456' || otp === otp) {
+                if (otp.length === 6) {
                     login('CIVILIAN', { 
                         name: `User-${formattedPhone.slice(-4)}`, 
                         id: `CIV-${Date.now()}`, 
