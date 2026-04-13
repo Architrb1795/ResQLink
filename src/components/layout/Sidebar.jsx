@@ -11,7 +11,7 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
     {
       title: 'Operations',
       items: [
-        { to: '/', icon: LayoutDashboard, label: 'Command Center', roles: ['AGENCY', 'CIVILIAN', 'VOLUNTEER'] },
+        { to: '/dashboard', icon: LayoutDashboard, label: 'Command Center', roles: ['AGENCY', 'CIVILIAN', 'VOLUNTEER'] },
         { to: '/map', icon: Map, label: 'Crisis Map', roles: ['AGENCY', 'CIVILIAN', 'VOLUNTEER'] },
       ]
     },

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import CommandRail from './Header';
 import { Outlet } from 'react-router-dom';
+import ChatBot from '../chatbot/ChatBot';
 
 const Layout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -15,6 +16,8 @@ const Layout = () => {
             <Outlet />
         </main>
       </div>
+      {/* Global Live ChatBot — available on all pages */}
+      <ChatBot />
     </div>
   );
 };

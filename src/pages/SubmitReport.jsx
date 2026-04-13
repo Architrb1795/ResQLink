@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../context/AppStateContext';
 import { INCIDENT_TYPES } from '../data/mockData';
 import { 
     MapPin, CheckCircle, AlertOctagon, Info, ShieldCheck,
-    Droplets, Flame, HeartPulse, Package, AlertTriangle 
+    Droplets, Flame, HeartPulse, Package, AlertTriangle, X
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -17,12 +17,116 @@ const ICON_MAP = {
     TriangleAlert: AlertTriangle // Map the data string 'TriangleAlert' to the component AlertTriangle
 };
 
+// ── Success Toast Overlay ────────────────────────────────────────────────────
+const SuccessToast = ({ onClose, onNavigate }) => {
+    const [visible, setVisible] = useState(false);
+    const [countdown, setCountdown] = useState(6);
+
+    useEffect(() => {
+        // Mount animation
+        requestAnimationFrame(() => setVisible(true));
+
+        // Countdown timer
+        const interval = setInterval(() => {
+            setCountdown(prev => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    onNavigate();
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+            <div className={cn(
+                "relative bg-white rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden transition-all duration-500",
+                visible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-90 translate-y-8"
+            )}>
+                {/* Progress bar */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-slate-100">
+                    <div
+                        className="h-full bg-green-500 transition-all duration-1000 ease-linear"
+                        style={{ width: `${(countdown / 6) * 100}%` }}
+                    />
+                </div>
+
+                {/* Close button */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full transition-colors"
+                >
+                    <X className="w-4 h-4 text-slate-400" />
+                </button>
+
+                <div className="p-8 text-center">
+                    {/* Animated success icon */}
+                    <div className="relative w-20 h-20 mx-auto mb-5">
+                        <div className="absolute inset-0 bg-green-100 rounded-full animate-ping opacity-40" />
+                        <div className="relative w-20 h-20 bg-green-100 rounded-full flex items-center justify-center shadow-lg shadow-green-200">
+                            <CheckCircle className="w-10 h-10 text-green-600" />
+                        </div>
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">Report Submitted!</h2>
+                    <p className="text-slate-500 text-sm leading-relaxed mb-1">
+                        Your emergency report has been received by
+                    </p>
+                    <p className="text-slate-800 font-bold text-sm mb-5">
+                        Unit Alpha-1 · Sector 4 Response Team
+                    </p>
+
+                    {/* Status badges */}
+                    <div className="flex gap-2 justify-center mb-6 flex-wrap">
+                        <span className="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">✓ Received</span>
+                        <span className="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">📡 Transmitted</span>
+                        <span className="bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full">🚑 Units Alerted</span>
+                    </div>
+
+                    {/* Next steps */}
+                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 text-left">
+                        <h4 className="font-bold text-blue-800 text-xs mb-2 flex items-center gap-1.5">
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            What to do next
+                        </h4>
+                        <ul className="text-xs text-blue-700 space-y-1.5 list-disc pl-4">
+                            <li>Stay near your location if it is safe to do so</li>
+                            <li>Keep your phone line open for verification calls</li>
+                            <li>Update the report if the situation changes</li>
+                        </ul>
+                    </div>
+
+                    {/* CTA buttons */}
+                    <div className="flex gap-3">
+                        <button 
+                            onClick={onClose}
+                            className="flex-1 py-3 border-2 border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-all text-sm"
+                        >
+                            Submit Another
+                        </button>
+                        <button 
+                            onClick={onNavigate}
+                            className="flex-1 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg text-sm"
+                        >
+                            Dashboard ({countdown}s)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const SubmitReport = () => {
     const navigate = useNavigate();
     const { addIncident } = useAppState();
     const [step, setStep] = useState(1);
     const [submitting, setSubmitting] = useState(false);
-    const [success, setSuccess] = useState(false); // New Success State
+    const [showSuccess, setShowSuccess] = useState(false);
     
     const [formData, setFormData] = useState({
         type: '',
@@ -30,6 +134,7 @@ const SubmitReport = () => {
         description: '',
         locationConfirmed: true,
     });
+
 
     const SEVERITY_OPTIONS = [
         { id: 'LOW', label: 'Needs Attention', desc: 'Property damage, blocked roads, non-urgent.', color: 'bg-yellow-100 text-yellow-800 border-yellow-300' },
@@ -67,42 +172,26 @@ const SubmitReport = () => {
                 reporterId: 'current-user',
             });
             setSubmitting(false);
-            setSuccess(true); // Show success screen instead of immediate redirect
+            setShowSuccess(true); // Show success toast popup
         }, 1500);
     };
 
-    if (success) {
-        return (
-            <div className="max-w-md mx-auto py-12 px-6 text-center animate-in zoom-in-95 duration-500">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-green-200 shadow-lg">
-                    <CheckCircle className="w-10 h-10 text-green-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Help is on the way.</h2>
-                <p className="text-slate-500 mb-8 leading-relaxed">
-                    Your report has been received by <strong className="text-slate-800">Unit Alpha-1</strong> and nearest response teams in <strong>Sector 4</strong>.
-                </p>
-                <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-8 text-left">
-                    <h4 className="font-bold text-blue-800 text-sm mb-1 flex items-center">
-                        <ShieldCheck className="w-4 h-4 mr-2" />
-                        Next Steps
-                    </h4>
-                    <ul className="text-xs text-blue-700 space-y-2 list-disc pl-4">
-                        <li>Stay near your location if safe.</li>
-                        <li>Keep your phone line open for verification.</li>
-                        <li>Update the report if the situation changes.</li>
-                    </ul>
-                </div>
-                <button 
-                    onClick={() => navigate('/dashboard')}
-                    className="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-lg"
-                >
-                    Return to Mission Control
-                </button>
-            </div>
-        );
-    }
+
+    const resetForm = () => {
+        setShowSuccess(false);
+        setStep(1);
+        setFormData({ type: '', severity: 'HIGH', description: '', locationConfirmed: true });
+    };
 
     return (
+        <>
+        {/* Success Modal Toast */}
+        {showSuccess && (
+            <SuccessToast
+                onClose={resetForm}
+                onNavigate={() => navigate('/dashboard')}
+            />
+        )}
         <div className="max-w-xl mx-auto py-6 px-4">
             
             <div className="mb-6 text-center">
@@ -222,6 +311,7 @@ const SubmitReport = () => {
                 )}
             </div>
         </div>
+        </>
     );
 };
 

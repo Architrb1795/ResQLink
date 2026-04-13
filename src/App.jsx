@@ -34,12 +34,16 @@ function App() {
           <Route path="/login/volunteer" element={<LoginVolunteer />} />
           <Route path="/login/civilian" element={<LoginCivilian />} />
 
+          {/* Public Report Route (No Authentication Required) */}
+          <Route element={<Layout />}>
+            <Route path="/report" element={<SubmitReport />} />
+          </Route>
+
           {/* Protected App Routes */}
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<DashboardHome />} />
               <Route path="/map" element={<CrisisMap />} />
-              <Route path="/report" element={<SubmitReport />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/admin" element={<AdminPanel />} />

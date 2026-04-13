@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../../context/AppStateContext';
 import { Shield, HeartHandshake, MapPin } from 'lucide-react';
+import ChatBot from '../../components/chatbot/ChatBot';
 
 const RoleCard = ({ icon: Icon, title, subtitle, color, onClick }) => (
     <button 
@@ -80,6 +81,8 @@ const LoginSelection = () => {
                     V2.4.0 // SYSTEM OPERATIONAL // SECURE CONNECTION
                 </div>
             </div>
+            {/* ChatBot available on login page for emergency access */}
+            <ChatBot />
         </div>
     );
 };
