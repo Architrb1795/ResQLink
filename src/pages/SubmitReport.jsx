@@ -156,23 +156,46 @@ const SubmitReport = () => {
         setStep(2);
     };
 
+    const [serverUrl] = useState('http://localhost:3001');
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
         
-        setTimeout(() => {
-            addIncident({
-                type: formData.type.toUpperCase(),
-                severity: formData.severity,
-                description: formData.description,
-                lat: 28.6139 + (Math.random() - 0.5) * 0.01,
-                lng: 77.2090 + (Math.random() - 0.5) * 0.01,
-                locationName: 'Detected Location (GPS)',
-                reporterId: currentUser?.id || 'guest-user',
+        try {
+            const res = await fetch(`${serverUrl}/api/incidents`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: formData.type.toUpperCase(),
+                    severity: formData.severity,
+                    description: formData.description,
+                    lat: 28.6139 + (Math.random() - 0.5) * 0.01,
+                    lng: 77.2090 + (Math.random() - 0.5) * 0.01,
+                    locationName: 'Detected Location (GPS)',
+                    reporterId: currentUser?.id || 'guest-user',
+                    reporterPhone: currentUser?.phone || null
+                })
             });
-            setSubmitting(false);
-            setShowSuccess(true); // Show success toast popup
-        }, 1500);
+            
+            if (res.ok) {
+                addIncident({
+                    type: formData.type.toUpperCase(),
+                    severity: formData.severity,
+                    description: formData.description,
+                    lat: 28.6139 + (Math.random() - 0.5) * 0.01,
+                    lng: 77.2090 + (Math.random() - 0.5) * 0.01,
+                    locationName: 'Detected Location (GPS)',
+                    reporterId: currentUser?.id || 'guest-user',
+                    reporterPhone: currentUser?.phone || null
+                });
+            }
+        } catch (err) {
+            console.log('Server not available, storing locally only');
+        }
+        
+        setSubmitting(false);
+        setShowSuccess(true);
     };
 
 

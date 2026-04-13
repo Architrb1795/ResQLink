@@ -22,6 +22,12 @@ const client = twilio(
 const ADMIN_PHONE = process.env.ADMIN_PHONE || '+919999999999';
 const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || 'whatsapp:+919999999999';
 
+const otpStore = new Map();
+
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 async function initDatabase() {
   const createTables = `
     CREATE TABLE IF NOT EXISTS users (
@@ -136,6 +142,19 @@ async function notifyAdmins(incident) {
   );
 }
 
+async function notifyReporter(incident) {
+  if (!incident.reporter_phone) return;
+  
+  const message = `✅ RESQLINK: Your report #${incident.external_id} has been submitted successfully.\n\nType: ${incident.type}\nSeverity: ${incident.severity}\nLocation: ${incident.location_name}\n\nStay safe. Help is on the way.`;
+  
+  await sendSMS(message, incident.reporter_phone);
+  
+  await pool.query(
+    `INSERT INTO notifications (incident_id, phone, channel, status) VALUES ($1, $2, $3, $4)`,
+    [incident.id, incident.reporter_phone, 'SMS', 'SENT']
+  );
+}
+
 app.post('/api/incidents', async (req, res) => {
   try {
     const { type, severity, description, lat, lng, locationName, reporterId, reporterPhone } = req.body;
@@ -149,6 +168,7 @@ app.post('/api/incidents', async (req, res) => {
     const incident = result.rows[0];
     
     await notifyAdmins(incident);
+    await notifyReporter(incident);
     
     res.status(201).json(incident);
   } catch (err) {
@@ -243,6 +263,71 @@ app.post('/api/users', async (req, res) => {
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error('Error creating user:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/auth/send-otp', async (req, res) => {
+  try {
+    const { phone } = req.body;
+    if (!phone) {
+      return res.status(400).json({ error: 'Phone number required' });
+    }
+    
+    const otp = generateOTP();
+    otpStore.set(phone, { otp, expiresAt: Date.now() + 5 * 60 * 1000 });
+    
+    const message = `Your ResQLink verification code is: ${otp}. Valid for 5 minutes.`;
+    await sendSMS(message, phone);
+    
+    res.json({ success: true, message: 'OTP sent' });
+  } catch (err) {
+    console.error('Error sending OTP:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/auth/verify-otp', async (req, res) => {
+  try {
+    const { phone, otp } = req.body;
+    
+    if (!phone || !otp) {
+      return res.status(400).json({ error: 'Phone and OTP required' });
+    }
+    
+    const stored = otpStore.get(phone);
+    
+    if (!stored) {
+      return res.status(400).json({ error: 'No OTP sent to this number' });
+    }
+    
+    if (Date.now() > stored.expiresAt) {
+      otpStore.delete(phone);
+      return res.status(400).json({ error: 'OTP expired' });
+    }
+    
+    if (stored.otp !== otp) {
+      return res.status(400).json({ error: 'Invalid OTP' });
+    }
+    
+    otpStore.delete(phone);
+    
+    const userResult = await pool.query('SELECT * FROM users WHERE phone = $1', [phone]);
+    let user;
+    
+    if (userResult.rows.length === 0) {
+      user = await pool.query(
+        `INSERT INTO users (phone, name, role) VALUES ($1, $2, $3) RETURNING *`,
+        [phone, `User-${phone.slice(-4)}`, 'CIVILIAN']
+      );
+      user = user.rows[0];
+    } else {
+      user = userResult.rows[0];
+    }
+    
+    res.json({ success: true, user });
+  } catch (err) {
+    console.error('Error verifying OTP:', err);
     res.status(500).json({ error: err.message });
   }
 });
