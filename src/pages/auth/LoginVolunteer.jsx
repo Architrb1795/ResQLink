@@ -19,8 +19,8 @@ const LoginVolunteer = () => {
     };
 
     return (
-        <div className="min-h-screen bg-emerald-50 flex items-center justify-center p-4">
-            <div className="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
+        <div className="min-h-screen bg-emerald-50 dark:bg-dark-background flex items-center justify-center p-4">
+            <div className="max-w-4xl w-full bg-white dark:bg-dark-surface rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row border border-slate-200 dark:border-dark-border">
                 
                 {/* Visual Context Panel (Left) */}
                 <div className="hidden md:flex md:w-5/12 bg-emerald-600 p-8 flex-col justify-between text-white relative overflow-hidden">
@@ -57,37 +57,37 @@ const LoginVolunteer = () => {
                 {/* Login Form (Right) */}
                 <div className="flex-1 p-8 md:p-12">
                     <div className="mb-8">
-                        <h3 className="text-2xl font-bold text-slate-800">Volunteer Sign In</h3>
-                        <p className="text-slate-500">Enter your registered details to assist.</p>
+                        <h3 className="text-2xl font-bold text-slate-800 dark:text-dark-text">Volunteer Sign In</h3>
+                        <p className="text-slate-500 dark:text-dark-text-muted">Enter your registered details to assist.</p>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Full Name / ID</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-dark-text mb-1">Full Name / ID</label>
                             <input 
                                 type="text"
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 transition-all"
+                                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-dark-border rounded-lg focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-emerald-100 transition-all text-slate-800 dark:text-dark-text"
                                 placeholder="e.g. Rahul Verma"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Mobile Number</label>
+                            <label className="block text-sm font-medium text-slate-700 dark:text-dark-text mb-1">Mobile Number</label>
                             <input 
                                 type="tel"
-                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100 transition-all font-mono"
+                                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-dark-border rounded-lg focus:border-emerald-500 focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-emerald-100 transition-all font-mono text-slate-800 dark:text-dark-text"
                                 placeholder="+91 98765 43210"
                                 required
                             />
                         </div>
                         
-                        <div className="border-t border-slate-100 pt-2"></div>
+                        <div className="border-t border-slate-100 dark:border-dark-border pt-2"></div>
 
                         <button 
                             type="submit" 
                             disabled={loading}
-                            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all flex items-center justify-center shadow-lg shadow-emerald-200 disabled:opacity-70"
+                            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30 disabled:opacity-70"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                                 <>
@@ -97,7 +97,7 @@ const LoginVolunteer = () => {
                         </button>
                     </form>
 
-                    <p className="mt-8 text-center text-sm text-slate-400">
+                    <p className="mt-8 text-center text-sm text-slate-400 dark:text-dark-text-muted">
                         Not registered? <a href="#" className="text-emerald-600 font-bold hover:underline">Sign up as a volunteer</a>
                     </p>
                 </div>

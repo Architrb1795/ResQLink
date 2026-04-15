@@ -105,39 +105,39 @@ const LoginCivilian = () => {
     };
 
     return (
-        <div className="min-h-screen bg-amber-50/50 flex flex-col items-center justify-center p-4">
+        <div className="min-h-screen bg-amber-50/50 dark:bg-slate-900 flex flex-col items-center justify-center p-4">
             
             <div className="text-center mb-8 animate-in slide-in-from-top duration-500">
-                <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                     <ShieldCheck className="w-8 h-8 text-amber-600" />
                 </div>
-                <h1 className="text-2xl font-bold text-slate-900">{t('login.title')}</h1>
-                <p className="text-slate-500 max-w-xs mx-auto mt-2">{t('login.subtitle')}</p>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t('login.title')}</h1>
+                <p className="text-slate-500 dark:text-slate-400 max-w-xs mx-auto mt-2">{t('login.subtitle')}</p>
             </div>
 
-            <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden p-8 animate-in zoom-in-95 duration-300">
+            <div className="max-w-md w-full bg-white dark:bg-dark-surface rounded-2xl shadow-xl overflow-hidden p-8 animate-in zoom-in-95 duration-300 border border-slate-200 dark:border-dark-border">
                 {!otpSent ? (
                     <form onSubmit={handleSendOTP} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-2">{t('login.phoneLabel')}</label>
+                            <label className="block text-sm font-bold text-slate-700 dark:text-dark-text mb-2">{t('login.phoneLabel')}</label>
                             <div className="relative">
                                 <Phone className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
                                 <input 
                                     type="tel"
-                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-200 transition-all font-mono text-lg"
+                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-dark-border rounded-xl focus:border-amber-500 focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-amber-200 transition-all font-mono text-lg text-slate-800 dark:text-dark-text"
                                     placeholder="+91 98765 43210"
                                     value={phone}
                                     onChange={(e) => setPhone(formatPhone(e.target.value))}
                                     required
                                 />
                             </div>
-                            <p className="text-xs text-slate-400 mt-2 ml-1">We will send a one-time verification code.</p>
+                            <p className="text-xs text-slate-400 dark:text-dark-text-muted mt-2 ml-1">We will send a one-time verification code.</p>
                         </div>
 
                         <button 
                             type="submit" 
                             disabled={loading}
-                            className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-all flex items-center justify-center shadow-lg shadow-amber-200 disabled:opacity-70 text-lg"
+                            className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-all flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-amber-900/30 disabled:opacity-70 text-lg"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('login.getOtp')}
                         </button>
@@ -145,21 +145,21 @@ const LoginCivilian = () => {
                 ) : (
                     <form onSubmit={handleVerifyOTP} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 mb-2">{t('login.enterOtp')}</label>
+                            <label className="block text-sm font-bold text-slate-700 dark:text-dark-text mb-2">{t('login.enterOtp')}</label>
                             <div className="relative">
                                 <KeyRound className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
                                 <input 
                                     type="text"
                                     inputMode="numeric"
                                     maxLength={6}
-                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-200 transition-all font-mono text-lg text-center tracking-widest"
+                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-dark-border rounded-xl focus:border-amber-500 focus:bg-white dark:focus:bg-slate-700 focus:ring-2 focus:ring-amber-200 transition-all font-mono text-lg text-center tracking-widest text-slate-800 dark:text-dark-text"
                                     placeholder="------"
                                     value={otp}
                                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                                     required
                                 />
                             </div>
-                            <p className="text-xs text-slate-400 mt-2 ml-1">Enter the 6-digit code sent to {phone}</p>
+                            <p className="text-xs text-slate-400 dark:text-dark-text-muted mt-2 ml-1">Enter the 6-digit code sent to {phone}</p>
                             <button 
                                 type="button" 
                                 onClick={() => { setOtpSent(false); setOtp(''); }}
@@ -174,7 +174,7 @@ const LoginCivilian = () => {
                         <button 
                             type="submit" 
                             disabled={loading || otp.length !== 6}
-                            className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-all flex items-center justify-center shadow-lg shadow-amber-200 disabled:opacity-70 text-lg"
+                            className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-all flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-amber-900/30 disabled:opacity-70 text-lg"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('login.verify')}
                         </button>
@@ -186,14 +186,14 @@ const LoginCivilian = () => {
                 )}
 
                 <div className="mt-8 flex flex-col gap-3">
-                    <button onClick={() => navigate('/report')} className="w-full py-3 border-2 border-slate-100 rounded-xl font-bold text-slate-600 hover:bg-slate-50 hover:border-slate-200 transition-colors flex items-center justify-center">
+                    <button onClick={() => navigate('/report')} className="w-full py-3 border-2 border-slate-100 dark:border-dark-border rounded-xl font-bold text-slate-600 dark:text-dark-text-muted hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-200 transition-colors flex items-center justify-center">
                         <MapPin className="w-4 h-4 mr-2" />
                         {t('login.reportWithoutLogin')}
                     </button>
                 </div>
             </div>
             
-            <p className="mt-8 text-center text-xs text-slate-400 max-w-sm" dangerouslySetInnerHTML={{__html: t('login.emergencyNote').replace('112', '<strong>112</strong>')}} />
+            <p className="mt-8 text-center text-xs text-slate-400 dark:text-dark-text-muted max-w-sm" dangerouslySetInnerHTML={{__html: t('login.emergencyNote').replace('112', '<strong>112</strong>')}} />
         </div>
     );
 };

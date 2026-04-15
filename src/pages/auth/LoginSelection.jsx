@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../../context/AppStateContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { Shield, HeartHandshake, MapPin } from 'lucide-react';
+import { Shield, HeartHandshake, MapPin, Sun, Moon } from 'lucide-react';
 import ChatBot from '../../components/chatbot/ChatBot';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 
@@ -26,6 +26,19 @@ const LoginSelection = () => {
     const navigate = useNavigate();
     const { currentUser } = useAppState();
     const { t } = useLanguage();
+    const [isDark, setIsDark] = React.useState(() => {
+        return localStorage.getItem('theme') === 'dark';
+    });
+
+    React.useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }, [isDark]);
 
     useEffect(() => {
         if (currentUser) {
@@ -84,7 +97,13 @@ const LoginSelection = () => {
                     {t('login.footer')}
                 </div>
             </div>
-            <div className="absolute top-4 right-4">
+            <div className="absolute top-4 right-4 flex items-center gap-2">
+                <button 
+                    onClick={() => setIsDark(!isDark)}
+                    className="p-2 rounded-full hover:bg-slate-800 transition-colors"
+                >
+                    {isDark ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-slate-400" />}
+                </button>
                 <LanguageSwitcher />
             </div>
             {/* ChatBot available on login page for emergency access */}
