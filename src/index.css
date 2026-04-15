@@ -6,7 +6,33 @@
 
 @layer base {
   body {
-    @apply font-sans antialiased text-text bg-background;
+    @apply font-sans antialiased;
+  }
+
+  .light {
+    --color-bg: #F8F9FA;
+    --color-surface: #FFFFFF;
+    --color-text: #202124;
+    --color-text-muted: #5F6368;
+    --color-border: #E0E0E0;
+    @apply bg-background text-text;
+  }
+
+  .dark {
+    --color-bg: #0F172A;
+    --color-surface: #1E293B;
+    --color-text: #F1F5F9;
+    --color-text-muted: #94A3B8;
+    --color-border: #334155;
+    @apply bg-dark-background text-dark-text;
+  }
+
+  body {
+    @apply bg-background text-text;
+  }
+
+  .dark body {
+    @apply bg-dark-background text-dark-text;
   }
 }
 
@@ -24,6 +50,10 @@
   @apply bg-slate-300 rounded-full hover:bg-slate-400;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-slate-600 hover:bg-slate-500;
+}
+
 .leaflet-container {
   width: 100%;
   height: 100%;
@@ -37,4 +67,63 @@
 .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+/* Dark mode component overrides */
+.dark .bg-white {
+  background-color: #1E293B;
+}
+
+.dark .bg-gray-50 {
+  background-color: #1E293B;
+}
+
+.dark .bg-gray-100 {
+  background-color: #334155;
+}
+
+.dark .text-gray-900 {
+  color: #F1F5F9;
+}
+
+.dark .text-gray-700 {
+  color: #CBD5E1;
+}
+
+.dark .text-gray-600 {
+  color: #94A3B8;
+}
+
+.dark .text-gray-500 {
+  color: #64748B;
+}
+
+.dark .border-gray-200 {
+  border-color: #334155;
+}
+
+.dark .border-gray-300 {
+  border-color: #475569;
+}
+
+.dark .hover\:bg-gray-100:hover {
+  background-color: #334155;
+}
+
+.dark .hover\:bg-gray-50:hover {
+  background-color: #334155;
+}
+
+.dark input, 
+.dark textarea, 
+.dark select {
+  @apply bg-dark-surface border-dark-border text-dark-text;
+}
+
+.dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }

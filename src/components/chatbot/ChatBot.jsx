@@ -204,19 +204,19 @@ const HelplineCard = ({ helplineKey }) => {
   return (
     <a
       href={`tel:${h.number.replace(/[^0-9+]/g, '')}`}
-      className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl p-3 hover:shadow-md hover:border-slate-300 transition-all group"
+      className="flex items-center gap-3 bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border rounded-xl p-3 hover:shadow-md hover:border-slate-300 dark:hover:border-dark-border transition-all group"
     >
       <div className={`w-10 h-10 ${h.color} rounded-full flex items-center justify-center shrink-0`}>
         <Phone className="w-4 h-4 text-white" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <span className="font-bold text-sm text-slate-800 truncate">{h.name}</span>
+          <span className="font-bold text-sm text-slate-800 dark:text-dark-text truncate">{h.name}</span>
           <span className={`font-mono font-bold text-sm ${h.textColor} shrink-0`}>{h.number}</span>
         </div>
-        <p className="text-xs text-slate-500 truncate">{h.desc}</p>
+        <p className="text-xs text-slate-500 dark:text-dark-text-muted truncate">{h.desc}</p>
       </div>
-      <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 shrink-0" />
+      <ExternalLink className="w-3.5 h-3.5 text-slate-400 dark:text-dark-text-muted group-hover:text-slate-600 shrink-0" />
     </a>
   );
 };
@@ -245,7 +245,7 @@ const MessageBubble = ({ msg }) => {
       <div className={`max-w-[85%] ${isBot ? '' : 'items-end flex flex-col'}`}>
         <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
           isBot 
-            ? 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm' 
+            ? 'bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border text-slate-800 dark:text-dark-text rounded-tl-sm shadow-sm' 
             : 'bg-red-600 text-white rounded-tr-sm'
         }`}>
           {renderText(msg.text)}
@@ -370,9 +370,9 @@ const ChatBot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-[360px] max-h-[580px] bg-slate-50 rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-24 right-6 z-50 w-[360px] max-h-[580px] bg-slate-50 dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-dark-border flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
-          <div className="bg-slate-900 px-4 py-3 flex items-center justify-between shrink-0">
+          <div className="bg-slate-900 dark:bg-slate-950 px-4 py-3 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
                 <Shield className="w-4.5 h-4.5 text-white w-5 h-5" />
@@ -388,14 +388,14 @@ const ChatBot = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={resetChat}
-                className="p-1.5 hover:bg-slate-800 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors"
                 title="Reset chat"
               >
                 <RotateCcw className="w-4 h-4 text-slate-400" />
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 hover:bg-slate-800 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition-colors"
               >
                 <X className="w-4 h-4 text-slate-400" />
               </button>
@@ -420,7 +420,7 @@ const ChatBot = () => {
                 <div className="w-7 h-7 bg-red-600 rounded-full flex items-center justify-center mr-2 shrink-0 mt-0.5">
                   <Shield className="w-3.5 h-3.5 text-white" />
                 </div>
-                <div className="bg-white border border-slate-200 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm">
+                <div className="bg-white dark:bg-dark-surface border border-slate-200 dark:border-dark-border px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm">
                   <div className="flex gap-1 items-center h-4">
                     <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -434,12 +434,12 @@ const ChatBot = () => {
 
           {/* Options / Quick Replies */}
           {currentOptions && currentOptions.length > 0 && !isTyping && (
-            <div className="p-3 border-t border-slate-200 bg-white flex flex-col gap-1.5 shrink-0 max-h-52 overflow-y-auto">
+            <div className="p-3 border-t border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface flex flex-col gap-1.5 shrink-0 max-h-52 overflow-y-auto">
               {currentOptions.map((option, i) => (
                 <button
                   key={i}
                   onClick={() => handleOptionClick(option)}
-                  className="w-full text-left text-sm px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-all flex items-center justify-between group font-medium text-slate-700"
+                  className="w-full text-left text-sm px-3 py-2.5 rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-slate-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-300 dark:hover:border-red-800 hover:text-red-700 dark:hover:text-red-400 transition-all flex items-center justify-between group font-medium text-slate-700 dark:text-dark-text"
                 >
                   <span>{option.label}</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-500 shrink-0" />

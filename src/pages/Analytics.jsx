@@ -20,11 +20,11 @@ const categoryData = [
 ];
 
 const InsightCard = ({ title, value, subtitle, trend, color, icon: Icon }) => (
-    <div className="bg-white p-6 rounded border border-slate-200 shadow-sm flex items-start justify-between">
+    <div className="bg-white dark:bg-dark-surface p-6 rounded border border-slate-200 dark:border-dark-border shadow-sm flex items-start justify-between">
         <div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{title}</p>
-            <h3 className="text-3xl font-bold text-slate-800">{value}</h3>
-            <p className="text-xs text-slate-400 mt-1 font-medium">{subtitle}</p>
+            <p className="text-xs font-bold text-slate-500 dark:text-dark-text-muted uppercase tracking-widest mb-1">{title}</p>
+            <h3 className="text-3xl font-bold text-slate-800 dark:text-dark-text">{value}</h3>
+            <p className="text-xs text-slate-400 dark:text-dark-text-muted mt-1 font-medium">{subtitle}</p>
         </div>
         <div className={`p-3 rounded-lg ${color}`}>
             <Icon className="w-6 h-6" />
@@ -36,11 +36,11 @@ const Analytics = () => {
     return (
         <div className="space-y-8 max-w-7xl mx-auto">
             <div>
-                 <h2 className="text-2xl font-bold text-slate-800 mb-1 flex items-center">
+                 <h2 className="text-2xl font-bold text-slate-800 dark:text-dark-text mb-1 flex items-center">
                     <TrendingUp className="w-6 h-6 mr-2 text-blue-600" />
                     Operational Intelligence
                 </h2>
-                <p className="text-slate-500 text-sm">Post-incident analysis and real-time trend monitoring.</p>
+                <p className="text-slate-500 dark:text-dark-text-muted text-sm">Post-incident analysis and real-time trend monitoring.</p>
             </div>
 
             {/* 1. KEY INSIGHTS ROW */}
@@ -49,31 +49,31 @@ const Analytics = () => {
                     title="Avg Response Time" 
                     value="12m 30s" 
                     subtitle="↓ 15% better than yesterday" 
-                    color="bg-green-100 text-green-600"
+                    color="bg-green-100 dark:bg-green-900/30 text-green-600"
                     icon={Clock}
                 />
                 <InsightCard 
                     title="Incident Volume" 
                     value="42" 
                     subtitle="↑ High activity in Sector 4" 
-                    color="bg-red-100 text-red-600"
+                    color="bg-red-100 dark:bg-red-900/30 text-red-600"
                     icon={AlertTriangle}
                 />
                  <InsightCard 
                     title="Heatmap Focus" 
                     value="North" 
                     subtitle="Concentration shifting rapidly" 
-                    color="bg-blue-100 text-blue-600"
+                    color="bg-blue-100 dark:bg-blue-900/30 text-blue-600"
                     icon={Map}
                 />
             </div>
 
             {/* 2. CHARTS SECTION */}
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded border border-slate-200 shadow-sm">
+                <div className="bg-white dark:bg-dark-surface p-6 rounded border border-slate-200 dark:border-dark-border shadow-sm">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-sm uppercase text-slate-500 tracking-widest">Incident Volume vs Resolution</h3>
-                        <span className="text-xs font-bold bg-slate-100 px-2 py-1 rounded text-slate-500">LAST 6 HOURS</span>
+                        <h3 className="font-bold text-sm uppercase text-slate-500 dark:text-dark-text-muted tracking-widest">Incident Volume vs Resolution</h3>
+                        <span className="text-xs font-bold bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-500 dark:text-dark-text-muted">LAST 6 HOURS</span>
                     </div>
                     <div className="h-72">
                         <ResponsiveContainer width="100%" height="100%">
@@ -102,10 +102,10 @@ const Analytics = () => {
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded border border-slate-200 shadow-sm">
+                <div className="bg-white dark:bg-dark-surface p-6 rounded border border-slate-200 dark:border-dark-border shadow-sm">
                      <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-sm uppercase text-slate-500 tracking-widest">Incident Distribution</h3>
-                        <span className="text-xs font-bold bg-slate-100 px-2 py-1 rounded text-slate-500">BY TYPE</span>
+                        <h3 className="font-bold text-sm uppercase text-slate-500 dark:text-dark-text-muted tracking-widest">Incident Distribution</h3>
+                        <span className="text-xs font-bold bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded text-slate-500 dark:text-dark-text-muted">BY TYPE</span>
                     </div>
                     <div className="h-72">
                          <ResponsiveContainer width="100%" height="100%">

@@ -4,20 +4,28 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        primary: "#0056D2", // Medical Blue
-        critical: "#D93025", // Signal Red
-        warning: "#F9AB00", // Amber
-        success: "#188038", // Green
-        background: "#F8F9FA", // Off-White
+        primary: "#0056D2",
+        critical: "#D93025",
+        warning: "#F9AB00",
+        success: "#188038",
+        background: "#F8F9FA",
         surface: "#FFFFFF",
         text: {
-          DEFAULT: "#202124", // Charcoal
+          DEFAULT: "#202124",
           muted: "#5F6368",
         },
         border: "#E0E0E0",
+        dark: {
+          background: "#0F172A",
+          surface: "#1E293B",
+          text: "#F1F5F9",
+          'text-muted': "#94A3B8",
+          border: "#334155",
+        }
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
