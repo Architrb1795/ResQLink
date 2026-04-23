@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../../context/AppStateContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { ShieldCheck, MapPin, ArrowRight, Loader2, Phone, KeyRound } from 'lucide-react';
+import { ShieldCheck, MapPin, Loader2, Phone, KeyRound } from 'lucide-react';
 
 const LoginCivilian = () => {
     const navigate = useNavigate();
@@ -13,7 +13,7 @@ const LoginCivilian = () => {
     const [otp, setOtp] = useState('');
     const [otpSent, setOtpSent] = useState(false);
     const [error, setError] = useState('');
-    const [serverUrl, setServerUrl] = useState('https://resqapp-2.onrender.com');
+    const [serverUrl] = useState('https://resqapp-2.onrender.com');
 
     const formatPhone = (input) => {
         const digits = input.replace(/\D/g, '');

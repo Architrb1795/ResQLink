@@ -53,7 +53,7 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
             </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-6 overflow-y-auto no-scrollbar">
             {navGroups.map((group, idx) => {
                 const visibleItems = group.items.filter(item => item.roles.includes(userRole));
                 if (visibleItems.length === 0) return null;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MapWidget from '../components/dashboard/MapWidget';
-import { Filter, Layers, ChevronLeft, ChevronRight, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { Filter, ChevronLeft, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 const CrisisMap = () => {

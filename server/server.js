@@ -10,6 +10,110 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Lightweight in-memory cache to avoid hammering public APIs (demo-friendly).
+const externalCache = new Map(); // key -> { expiresAt:number, data:any }
+const getCached = (key) => {
+  const hit = externalCache.get(key);
+  if (!hit) return null;
+  if (Date.now() > hit.expiresAt) {
+    externalCache.delete(key);
+    return null;
+  }
+  return hit.data;
+};
+const setCached = (key, data, ttlMs = 60_000) => {
+  externalCache.set(key, { data, expiresAt: Date.now() + ttlMs });
+};
+
+const fetchJson = async (url) => {
+  const r = await fetch(url, { headers: { 'accept': 'application/json' } });
+  if (!r.ok) throw new Error(`Upstream ${r.status}`);
+  return await r.json();
+};
+
+// External feed proxies (avoid CORS issues in browsers)
+app.get('/api/external/eonet', async (req, res) => {
+  const cacheKey = 'eonet';
+  const cached = getCached(cacheKey);
+  if (cached) return res.json(cached);
+  try {
+    const data = await fetchJson('https://eonet.gsfc.nasa.gov/api/v3/events?status=open&days=60');
+    const out = (data.events || []).map((event) => {
+      const geom = Array.isArray(event.geometry) && event.geometry.length > 0 ? event.geometry[event.geometry.length - 1] : null;
+      return {
+        id: event.id,
+        title: event.title,
+        categories: (event.categories || []).map((c) => c.title),
+        coordinates: geom?.coordinates, // [lng, lat]
+      };
+    });
+    setCached(cacheKey, out, 60_000);
+    res.json(out);
+  } catch (err) {
+    res.status(502).json({ error: 'EONET proxy failed', detail: err.message });
+  }
+});
+
+app.get('/api/external/usgs', async (req, res) => {
+  const cacheKey = 'usgs';
+  const cached = getCached(cacheKey);
+  if (cached) return res.json(cached);
+  try {
+    const data = await fetchJson('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson');
+    const out = (data.features || []).map((feature) => ({
+      id: feature.id,
+      title: feature.properties?.title,
+      mag: feature.properties?.mag,
+      coordinates: feature.geometry?.coordinates, // [lng, lat, depth]
+    }));
+    setCached(cacheKey, out, 60_000);
+    res.json(out);
+  } catch (err) {
+    res.status(502).json({ error: 'USGS proxy failed', detail: err.message });
+  }
+});
+
+app.get('/api/external/gdacs', async (req, res) => {
+  const cacheKey = 'gdacs';
+  const cached = getCached(cacheKey);
+  if (cached) return res.json(cached);
+  try {
+    const data = await fetchJson('https://www.gdacs.org/gdacsapi/api/events/getbboxmapdata?v=2.0');
+    const out = (data.features || []).map((feature) => ({
+      id: feature.properties?.eventid,
+      title: feature.properties?.name,
+      description: feature.properties?.htmldescription,
+      severity: feature.properties?.alertlevel,
+      coordinates: feature.geometry?.coordinates, // [lng, lat]
+      type: feature.properties?.eventtype,
+    }));
+    setCached(cacheKey, out, 60_000);
+    res.json(out);
+  } catch (err) {
+    res.status(502).json({ error: 'GDACS proxy failed', detail: err.message });
+  }
+});
+
+app.get('/api/external/fema', async (req, res) => {
+  const cacheKey = 'fema';
+  const cached = getCached(cacheKey);
+  if (cached) return res.json(cached);
+  try {
+    const data = await fetchJson('https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries?$orderby=declarationDate%20desc&$top=50');
+    const out = (data.DisasterDeclarationsSummaries || []).map((d, idx) => ({
+      id: `${d.disasterNumber}-${d.state}-${d.placeCode ?? d.fipsCountyCode ?? d.fipsStateCode ?? '0'}-${d.declarationDate}-${idx}`,
+      title: d.declarationTitle,
+      type: d.incidentType,
+      state: d.state,
+      date: d.declarationDate,
+    }));
+    setCached(cacheKey, out, 5 * 60_000);
+    res.json(out);
+  } catch (err) {
+    res.status(502).json({ error: 'FEMA proxy failed', detail: err.message });
+  }
+});
+
 const pool = process.env.DATABASE_URL 
   ? new Pool({ connectionString: process.env.DATABASE_URL })
   : null;
@@ -31,7 +135,6 @@ if (twilioSid && twilioToken && twilioSid.startsWith('AC') && twilioToken.length
 }
 
 const ADMIN_PHONE = process.env.ADMIN_PHONE || '+919999999999';
-const ADMIN_WHATSAPP = process.env.ADMIN_WHATSAPP || 'whatsapp:+919999999999';
 
 const otpStore = new Map();
 

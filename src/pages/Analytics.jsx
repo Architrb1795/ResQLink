@@ -1,5 +1,5 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, LineChart, Line } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { TrendingUp, AlertTriangle, Clock, Map } from 'lucide-react';
 
 const data = [
@@ -19,7 +19,7 @@ const categoryData = [
     { name: 'Supply', count: 5 },
 ];
 
-const InsightCard = ({ title, value, subtitle, trend, color, icon: Icon }) => (
+const InsightCard = ({ title, value, subtitle, color, icon: Icon }) => (
     <div className="bg-white dark:bg-dark-surface p-6 rounded border border-slate-200 dark:border-dark-border shadow-sm flex items-start justify-between">
         <div>
             <p className="text-xs font-bold text-slate-500 dark:text-dark-text-muted uppercase tracking-widest mb-1">{title}</p>

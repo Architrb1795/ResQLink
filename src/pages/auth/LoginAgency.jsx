@@ -7,13 +7,6 @@ const LoginAgency = () => {
     const navigate = useNavigate();
     const { login } = useAppState();
     const [loading, setLoading] = useState(false);
-    
-    // Mock fields
-    const [formData, setFormData] = useState({
-        agencyId: '',
-        email: '',
-        password: ''
-    });
 
     const handleLogin = (e) => {
         e.preventDefault();
